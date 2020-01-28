@@ -66,6 +66,36 @@ See https://docs.expo.io/versions/latest/distribution/building-standalone-apps/#
     }
   }
 
+  /*   async prepareCredentials2() {
+    await runCredentialsManager(context, new SetupIosDist({ experienceName, bundleIdentifier }));
+    const distributionCert = await context.ios.getDistCert(experienceName, bundleIdentifier);
+    if (!distributionCert) {
+      throw new CommandError(
+        'INSUFFICIENT_CREDENTIALS',
+        `This build request requires a valid distribution certificate.`
+      );
+    }
+
+    await runCredentialsManager(context, new SetupIosPush({ experienceName, bundleIdentifier }));
+
+    await runCredentialsManager(
+      context,
+      new SetupIosProvisioningProfile({
+        experienceName,
+        bundleIdentifier,
+        distCert: distributionCert,
+      })
+    );
+    provisioningProfile = await context.ios.getAppCredentials(experienceName, bundleIdentifier);
+
+    if (!provisioningProfile) {
+      throw new CommandError(
+        'INSUFFICIENT_CREDENTIALS',
+        `This build request requires a valid provisioning profile.`
+      );
+    }
+  } */
+
   async clearAndRevokeCredentialsIfRequested(projectMetadata) {
     const {
       clearCredentials,

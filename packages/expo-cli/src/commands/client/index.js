@@ -18,6 +18,7 @@ import { createClientBuildRequest, getExperienceName, isAllowedToBuild } from '.
 import generateBundleIdentifier from './generateBundleIdentifier';
 import { SetupIosDist } from '../../credentials/views/SetupIosDist';
 import { SetupIosPush } from '../../credentials/views/SetupIosPush';
+import { SetupIosProvisioningProfile } from '../../credentials/views/SetupIosProvisioningProfile';
 import { Context } from '../../credentials/context';
 import { CreateIosDist } from '../../credentials/views/IosDistCert';
 import { CreateOrReuseProvisioningProfileAdhoc } from '../../credentials/views/IosProvisioningProfileAdhoc';
@@ -134,21 +135,14 @@ export default program => {
       }
 
       let provisioningProfile;
-      const createOrReuseProfile = new CreateOrReuseProvisioningProfileAdhoc({
+      const createOrReuseProfile = new SetupIosProvisioningProfile({
         experienceName,
         bundleIdentifier,
-        distCertSerialNumber: distributionCert.distCertSerialNumber,
-        udids,
+        distCert: distributionCert,
       });
-      if (user) {
-        await runCredentialsManager(context, createOrReuseProfile);
-        provisioningProfile = await context.ios.getProvisioningProfile(
-          experienceName,
-          bundleIdentifier
-        );
-      } else {
-        provisioningProfile = await createOrReuseProfile.createOrReuse(context);
-      }
+      await runCredentialsManager(context, createOrReuseProfile);
+      provisioningProfile = await context.ios.getAppCredentials(experienceName, bundleIdentifier);
+
       if (!provisioningProfile) {
         throw new CommandError(
           'INSUFFICIENT_CREDENTIALS',
